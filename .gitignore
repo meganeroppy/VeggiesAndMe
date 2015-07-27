@@ -1,0 +1,44 @@
+# ---------------[ Unity generated ]------------------ #
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+UnityGenerated/
+#ProjectSettings/*.asset   # 2015 0627 oya
+*.apk
+
+# ----[ Visual Studio / MonoDevelop generated ]------- #
+  
+ExportedObj/
+*.svd
+*.userprefs
+*.csproj
+*.pidb
+*.suo
+*.sln
+*.user
+*.unityproj
+*.booproj
+*.tmp
+Assets/UnityVS.meta
+Assets/UnityVS/
+
+# -------------[ OS generated ]------------------------ #
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Icon?
+ehthumbs.db
+Thumbs.db
+ 
+# -------------[ Build ]------------------------ #
+*.html
+*.unity3d
+
+# ------------- [Unity3D generated meta files] --------- #
+*.pidb.meta
+
+# ----- [Unity3D Generated File On Crash Reports] ------ #
+sysinfo.txt
