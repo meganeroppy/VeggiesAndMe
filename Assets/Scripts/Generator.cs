@@ -17,6 +17,11 @@ public class Generator : MonoBehaviour {
 	
 	protected virtual void Update(){
 	
+		
+		if(GameManager.time <= 0){
+			return;
+		}
+	
 		if(timer > generateInterval){
 			timer = 0f;
 			Generate();

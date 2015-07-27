@@ -27,8 +27,11 @@ public class FlyingObject : MonoBehaviour {
 		if(!col.tag.Equals("Player") && !col.tag.Equals("DeadZone")){
 			return;
 		}
+		
 		if(col.tag.Equals("Player")){
-			
+			GameManager.score++;	
+		}else{
+		//	GameManager.score--;
 		}
 		Die();
 		
