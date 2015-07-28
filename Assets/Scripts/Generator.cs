@@ -4,8 +4,11 @@ using System.Collections;
 public class Generator : MonoBehaviour {
 
 	[SerializeField]
-	protected float generateInterval = 0.5f;
-	
+	protected float interval = 0.5f;
+	[SerializeField]
+	protected float interval_max = 3f;
+	[SerializeField]
+	protected float interval_min = 0.15f;
 	[SerializeField]
 	protected Vector2 maxOffset = new Vector2(10f, 5f);
 	
@@ -13,16 +16,25 @@ public class Generator : MonoBehaviour {
 	[SerializeField]
 	protected GameObject[] children;
 	
-	protected float timer = 0f;
+	protected float timer;
+	
+	protected AudioSource myAudio;
+	[SerializeField]
+	protected AudioClip clip;
+	
+	protected virtual void Awake(){
+		myAudio = GetComponent<AudioSource>();
+		interval = interval_max;
+		timer = interval;
+	}
 	
 	protected virtual void Update(){
-	
 		
 		if(GameManager.time <= 0){
 			return;
 		}
 	
-		if(timer > generateInterval){
+		if(timer > interval){
 			timer = 0f;
 			Generate();
 		}else{
@@ -31,6 +43,8 @@ public class Generator : MonoBehaviour {
 	}
 	
 	protected virtual void Generate(){
+	
+		myAudio.PlayOneShot(clip);
 	
 		int seed = Random.Range(0, children.Length);
 		GameObject obj = Instantiate(children[seed]) as GameObject;
@@ -41,5 +55,13 @@ public class Generator : MonoBehaviour {
 		
 		obj.transform.position = this.transform.position + offset;
 		
+	}
+	
+	public void Quicken(){
+	Debug.Log("Quicken");
+		if(interval > interval_min){
+			interval *= 0.9f;
+		}
+
 	}
 }

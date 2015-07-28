@@ -1,12 +1,15 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class PlayerHead : MonoBehaviour {
 	
 	Transform playerCam;
 	
-	[SerializeField]
+	//[SerializeField]
 	//float maxAngleZ = 36f;
+	
+	[SerializeField]
+	private GameManager game;
 	
 	// Use this for initialization
 	void Start () {
@@ -15,6 +18,11 @@ public class PlayerHead : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+	
+		if(GameManager.time <= 0){
+		return;
+		}
+		
 		Vector3 playerCamRot = playerCam.rotation.eulerAngles;
 		//Vector3 newRot = new Vector3(this.transform.rotation.x, playerCamRot.y, this.transform.rotation.z);
 		
@@ -29,4 +37,12 @@ public class PlayerHead : MonoBehaviour {
 //		Debug.Log("banana rot:" + this.transform.rotation.eulerAngles + "playerCam rot:" + playerCam.rotation.eulerAngles);
 
 	}
+	
+	protected virtual void OnTriggerEnter(Collider col){
+		if(!col.tag.Equals("FlyingObject")){
+			return;
+		}
+		if(game != null){
+			game.AddScore();
+		}	}
 }

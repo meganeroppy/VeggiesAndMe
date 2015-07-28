@@ -14,8 +14,17 @@ public class FlyingObject : MonoBehaviour {
 	
 	protected GameObject graphic;
 	
+	protected AudioSource audio;
+	
+	[SerializeField]
+	protected GameObject effect;
+	
+	[SerializeField]
+	protected AudioClip se;
+	
 	protected virtual void Awake(){
 		graphic = this.transform.GetChild(0).gameObject;
+		audio = GetComponent<AudioSource>();
 	}
 	
 	protected virtual void Update(){
@@ -29,7 +38,8 @@ public class FlyingObject : MonoBehaviour {
 		}
 		
 		if(col.tag.Equals("Player")){
-			GameManager.score++;	
+			audio.PlayOneShot(se);
+			Instantiate(effect, transform.position, transform.rotation);
 		}else{
 		//	GameManager.score--;
 		}
@@ -38,7 +48,9 @@ public class FlyingObject : MonoBehaviour {
 	}
 
 	public virtual void Die(){
-		Destroy(this.gameObject);
+	
+		graphic.SetActive(false);
+		Destroy(this.gameObject, 0.25f);
 	}
 	
 
