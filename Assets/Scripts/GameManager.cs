@@ -40,8 +40,10 @@ public class GameManager : MonoBehaviour {
 		
 		if(generator != null){
 			generator.Quicken();
-		}else{
-		Debug.Log("no generator has been assigned.");
 		}
+	}
+
+	public void ReduceScore(int val=1){
+		score -= val;
 	}
 }

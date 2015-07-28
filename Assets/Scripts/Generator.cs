@@ -22,6 +22,9 @@ public class Generator : MonoBehaviour {
 
 	[SerializeField]
 	protected GameObject[] children;
+
+	[SerializeField]
+	protected GameObject badItem;
 	
 	protected float timer;
 	
@@ -50,13 +53,17 @@ public class Generator : MonoBehaviour {
 	}
 	
 	protected virtual void Generate(){
-	
+
 		myAudio.PlayOneShot(clip);
 	
+		GameObject obj;
 		// choose a child 
-		int seed = Random.Range(0, children.Length);
-		GameObject obj = Instantiate(children[seed]) as GameObject;
-
+		if(Random.Range(0, 5) == 0){
+			obj = Instantiate(badItem) as GameObject;
+		}else{
+			int seed = Random.Range(0, children.Length);
+			obj = Instantiate(children[seed]) as GameObject;
+		}
 		// set angle
 		float rot = Random.Range(-maxRot, maxRot);
 		this.transform.rotation = Quaternion.Euler (new Vector3(0f, 0f, rot));
