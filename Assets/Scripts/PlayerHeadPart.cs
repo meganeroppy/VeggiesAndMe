@@ -12,10 +12,6 @@ public class PlayerHeadPart : MonoBehaviour {
 	}
 
 	protected virtual void OnTriggerEnter(Collider col){
-		if(!col.tag.Equals("FlyingObject")){
-			return;
-		}
-		
 		head.Hit(col);
 	}
 }

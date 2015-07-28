@@ -39,13 +39,14 @@ public class PlayerHead : MonoBehaviour {
 	}
 	
 	protected virtual void OnTriggerEnter(Collider col){
-		if(!col.tag.Equals("FlyingObject") && !col.tag.Equals("Mush")){
-			return;
-		}
 		Hit (col);
 	}
 
 	public void Hit(Collider col){
+		if(!col.tag.Equals("FlyingObject") && !col.tag.Equals("Mush")){
+			return;
+		}
+
 		if(game != null){
 			game = GameObject.Find("GameManager").GetComponent<GameManager>();
 		}
