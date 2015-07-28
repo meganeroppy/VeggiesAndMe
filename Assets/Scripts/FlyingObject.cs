@@ -14,7 +14,7 @@ public class FlyingObject : MonoBehaviour {
 	
 	protected GameObject graphic;
 	
-	protected AudioSource audio;
+	protected AudioSource myAudio;
 	
 	[SerializeField]
 	protected GameObject effect;
@@ -24,7 +24,7 @@ public class FlyingObject : MonoBehaviour {
 	
 	protected virtual void Awake(){
 		graphic = this.transform.GetChild(0).gameObject;
-		audio = GetComponent<AudioSource>();
+		myAudio = GetComponent<AudioSource>();
 	}
 	
 	protected virtual void Update(){
@@ -38,8 +38,9 @@ public class FlyingObject : MonoBehaviour {
 		}
 		
 		if(col.tag.Equals("Player")){
-			audio.PlayOneShot(se);
-			Instantiate(effect, transform.position, transform.rotation);
+			myAudio.PlayOneShot(se);
+			GameObject obj = Instantiate(effect, transform.position, transform.rotation) as GameObject;
+			obj.transform.SetParent(this.transform);
 		}else{
 		//	GameManager.score--;
 		}

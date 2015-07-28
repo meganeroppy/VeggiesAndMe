@@ -10,9 +10,16 @@ public class Generator : MonoBehaviour {
 	[SerializeField]
 	protected float interval_min = 0.15f;
 	[SerializeField]
-	protected Vector2 maxOffset = new Vector2(10f, 5f);
-	
-	
+	protected float minOffset = 1f;
+	[SerializeField]
+	protected float maxOffset = 3f;
+
+	[SerializeField]
+	protected float maxRot = 90f;
+
+	[SerializeField]
+	protected Transform generatePos;
+
 	[SerializeField]
 	protected GameObject[] children;
 	
@@ -29,7 +36,7 @@ public class Generator : MonoBehaviour {
 	}
 	
 	protected virtual void Update(){
-		
+
 		if(GameManager.time <= 0){
 			return;
 		}
@@ -46,21 +53,24 @@ public class Generator : MonoBehaviour {
 	
 		myAudio.PlayOneShot(clip);
 	
+		// choose a child 
 		int seed = Random.Range(0, children.Length);
 		GameObject obj = Instantiate(children[seed]) as GameObject;
-		
-		float offsetX = Random.Range(-maxOffset.x, maxOffset.x);
-		float offsetY = Random.Range(-maxOffset.y, maxOffset.y);
-		Vector3 offset = new Vector3(offsetX, offsetY, 0f);
-		
-		obj.transform.position = this.transform.position + offset;
-		
+
+		// set angle
+		float rot = Random.Range(-maxRot, maxRot);
+		this.transform.rotation = Quaternion.Euler (new Vector3(0f, 0f, rot));
+
+		// set distance from center
+		float offset = Random.Range(minOffset, maxOffset);
+		generatePos.transform.localPosition = new Vector3(0f, offset, 0f);
+
+		obj.transform.position = generatePos.position;
 	}
 	
 	public void Quicken(){
-	Debug.Log("Quicken");
 		if(interval > interval_min){
-			interval *= 0.9f;
+			interval *= 0.92f;
 		}
 
 	}
