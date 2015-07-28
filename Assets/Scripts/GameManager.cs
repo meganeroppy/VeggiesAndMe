@@ -46,4 +46,8 @@ public class GameManager : MonoBehaviour {
 	public void ReduceScore(int val=1){
 		score -= val;
 	}
+	
+	public void AddTime(float val=1f){
+		time += val;
+	}
 }

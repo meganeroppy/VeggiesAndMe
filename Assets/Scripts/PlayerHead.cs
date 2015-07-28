@@ -43,7 +43,7 @@ public class PlayerHead : MonoBehaviour {
 	}
 
 	public void Hit(Collider col){
-		if(!col.tag.Equals("FlyingObject") && !col.tag.Equals("Mush")){
+		if(!col.tag.Equals("FlyingObject") && !col.tag.Equals("Mush") && !col.tag.Equals("Clock")){
 			return;
 		}
 
@@ -53,6 +53,9 @@ public class PlayerHead : MonoBehaviour {
 
 		if(col.tag.Equals("Mush")){
 			game.ReduceScore(3);
+		}else if(col.tag.Equals("Clock")){
+			game.AddTime(0.7f);
+			
 		}else{
 			game.AddScore();
 		}

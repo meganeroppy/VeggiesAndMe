@@ -26,6 +26,9 @@ public class Generator : MonoBehaviour {
 	[SerializeField]
 	protected GameObject badItem;
 	
+	[SerializeField]
+	protected GameObject postponeItem;
+	
 	protected float timer;
 	
 	protected AudioSource myAudio;
@@ -56,14 +59,29 @@ public class Generator : MonoBehaviour {
 
 		myAudio.PlayOneShot(clip);
 	
+		bool done = false;
+		do{
 		GameObject obj;
 		// choose a child 
-		if(Random.Range(0, 5) == 0){
+		
+		int seed = Random.Range(0, 12);
+		
+		switch(seed){
+		case 0:
 			obj = Instantiate(badItem) as GameObject;
-		}else{
-			int seed = Random.Range(0, children.Length);
-			obj = Instantiate(children[seed]) as GameObject;
+			break;
+			
+		case 1:
+			obj = Instantiate(postponeItem) as GameObject;
+			break;
+		default:
+				int seed2 = Random.Range(0, children.Length);
+				obj = Instantiate(children[seed2]) as GameObject;
+				done = true;
+			break;
 		}
+
+
 		// set angle
 		float rot = Random.Range(-maxRot, maxRot);
 		this.transform.rotation = Quaternion.Euler (new Vector3(0f, 0f, rot));
@@ -73,6 +91,8 @@ public class Generator : MonoBehaviour {
 		generatePos.transform.localPosition = new Vector3(0f, offset, 0f);
 
 		obj.transform.position = generatePos.position;
+		
+		}while(!done);
 	}
 	
 	public void Quicken(){

@@ -49,6 +49,7 @@ public class FlyingObject : MonoBehaviour {
 	}
 
 	public virtual void Die(){
+	
 		graphic.SetActive(false);
 		Destroy(this.gameObject, 0.5f);
 	}
