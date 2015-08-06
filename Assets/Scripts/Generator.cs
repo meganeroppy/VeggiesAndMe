@@ -29,7 +29,7 @@ public class Generator : MonoBehaviour {
 	[SerializeField]
 	protected GameObject postponeItem;
 	
-	protected float timer;
+	protected float geneTimer;
 	
 	protected AudioSource myAudio;
 	[SerializeField]
@@ -37,8 +37,12 @@ public class Generator : MonoBehaviour {
 	
 	protected virtual void Awake(){
 		myAudio = GetComponent<AudioSource>();
+
+	}
+
+	public void Init(){
 		interval = interval_max;
-		timer = interval;
+		geneTimer = interval;
 	}
 	
 	protected virtual void Update(){
@@ -47,11 +51,11 @@ public class Generator : MonoBehaviour {
 			return;
 		}
 	
-		if(timer > interval){
-			timer = 0f;
+		if(geneTimer > interval){
+			geneTimer = 0f;
 			Generate();
 		}else{
-			timer += Time.deltaTime;
+			geneTimer += Time.deltaTime;
 		}
 	}
 	

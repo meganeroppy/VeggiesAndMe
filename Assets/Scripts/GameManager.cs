@@ -3,11 +3,27 @@ using System.Collections;
 
 public class GameManager : MonoBehaviour {
 
+	private const float MaxTime = 35f;
+
 	private static int _score = 0;
-	private static float _time = 35f;
+	private static float _time = 0f;
+
+	private static bool endOfGame = false;
 	
 	[SerializeField]
 	private Generator generator;
+
+	private void Awake(){
+		Init();
+	}
+
+
+	private void Init(){
+		score = 0;
+		time = MaxTime;
+
+		generator.Init();
+	}
 	
 	public static int score{
 		get{
@@ -30,8 +46,21 @@ public class GameManager : MonoBehaviour {
 	}
 	
 	private void Update(){
+
+		if(endOfGame){ 
+			if(Input.anyKeyDown){
+				Restart();
+			}
+		}
+
+		// reduce limit time
+
 		if(time > 0 ){
 			time -= Time.deltaTime;
+		}else{
+			if(!endOfGame){
+				endOfGame = true;
+			}
 		}
 	}
 	
@@ -49,5 +78,10 @@ public class GameManager : MonoBehaviour {
 	
 	public void AddTime(float val=1f){
 		time += val;
+	}
+
+
+	private void Restart(){
+		Init();
 	}
 }
