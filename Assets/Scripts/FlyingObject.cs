@@ -51,6 +51,7 @@ public class FlyingObject : MonoBehaviour {
 		}else{
 			if(col.tag.Equals("Boss")){
 				Instantiate(effect_die, transform.position, transform.rotation);
+				col.transform.parent.GetComponent<Boss_temp>().ReduceHealth();
 			}
 			Die();
 			return;

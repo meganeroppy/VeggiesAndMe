@@ -7,17 +7,17 @@ public class GameManager : MonoBehaviour {
 
 	private static int _score = 0;
 	private static float _time = 0f;
-
-	private static bool endOfGame = false;
-
-	public bool started{get; set;}
 	
+	public bool started{get; set;} // game is ongoing or not
+	public bool done{get; set;} // game is done or not
+
 	[SerializeField]
 	private Generator generator;
 
 	private void Awake(){
 		Init();
 		started = false;
+		done = false;
 	}
 
 
@@ -50,13 +50,13 @@ public class GameManager : MonoBehaviour {
 	
 	private void Update(){
 
-		if(endOfGame){ 
+		if(done){ 
 			if(Input.anyKeyDown){
 				Restart();
 			}
 		}
 
-		if(!started){
+		if(!started || done){
 			return;
 		}
 
@@ -64,8 +64,10 @@ public class GameManager : MonoBehaviour {
 		if(time > 0 ){
 			time -= Time.deltaTime;
 		}else{
-			if(!endOfGame){
-				endOfGame = true;
+			if(!done){
+				// game over 
+				GameObject.Find("Boss").GetComponent<Boss_temp>().Escape();
+				done = true;
 			}
 		}
 	}
@@ -89,5 +91,9 @@ public class GameManager : MonoBehaviour {
 
 	private void Restart(){
 		Init();
+	}
+
+	public void DisplayResult(){
+		Debug.Log("DisplayResult");
 	}
 }
