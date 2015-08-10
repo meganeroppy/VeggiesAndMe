@@ -9,12 +9,15 @@ public class GameManager : MonoBehaviour {
 	private static float _time = 0f;
 
 	private static bool endOfGame = false;
+
+	public bool started{get; set;}
 	
 	[SerializeField]
 	private Generator generator;
 
 	private void Awake(){
 		Init();
+		started = false;
 	}
 
 
@@ -53,8 +56,11 @@ public class GameManager : MonoBehaviour {
 			}
 		}
 
-		// reduce limit time
+		if(!started){
+			return;
+		}
 
+		// reduce limit time
 		if(time > 0 ){
 			time -= Time.deltaTime;
 		}else{

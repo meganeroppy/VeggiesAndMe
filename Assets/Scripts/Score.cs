@@ -9,7 +9,7 @@ public class Score : MonoBehaviour {
 	
 	protected void Update(){
 		if(text != null){
-		text.text = "Score : " + GameManager.score.ToString();
+		text.text = "Score:" + GameManager.score.ToString();
 		}
 	
 	}

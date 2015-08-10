@@ -13,7 +13,7 @@ public class Timer : MonoBehaviour {
 			if(val < 0){
 				val = 0;
 			}
-			text.text = "Time : " +  val.ToString();
+			text.text = "Time:" +  val.ToString();
 		}
 		
 	}
