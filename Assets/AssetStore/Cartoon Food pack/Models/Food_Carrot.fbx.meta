@@ -3,7 +3,12 @@ guid: 32f916aaf4d34944d9d218b7b3781b42
 ModelImporter:
   serializedVersion: 18
   fileIDToRecycleName:
+    100000: //RootNode
+    400000: //RootNode
+    2300000: //RootNode
+    3300000: //RootNode
     4300000: Food_Carrot
+    11100000: //RootNode
   materials:
     importMaterials: 0
     materialName: 0
