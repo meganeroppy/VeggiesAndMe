@@ -66,7 +66,7 @@ public class GameManager : MonoBehaviour {
 		}else{
 			if(!done){
 				// game over 
-				GameObject.Find("Boss").GetComponent<Boss_temp>().Escape();
+				GameObject.Find("Boss").GetComponent<Boss>().Escape();
 				done = true;
 			}
 		}

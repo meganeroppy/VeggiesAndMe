@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 
-public class Boss_temp : MonoBehaviour {
+public class Boss : MonoBehaviour {
 
 	// status
 	private enum BossState{
