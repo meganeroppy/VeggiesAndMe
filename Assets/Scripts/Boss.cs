@@ -181,11 +181,11 @@ public class Boss : MonoBehaviour {
 		});
 
 		// effect
-		/*
+		
 		Vector3 offset = new Vector3(Random.Range(-3f, 3f), Random.Range(-3f, 3f), -1f); 
 		Quaternion rot = Quaternion.identity;
 		Instantiate(spark, graphic.transform.position + offset, rot);
-		*/
+		
 
 		curhealth -= val;
 
