@@ -85,6 +85,9 @@ public class Boss : MonoBehaviour {
 	private Sprite[] facePattern;
 	[SerializeField]
 	private GameObject spark;
+	
+	// about escaping
+	private bool startFadeOut = false;
 
 	// se
 	private  AudioSource myAudio;
@@ -134,8 +137,10 @@ public class Boss : MonoBehaviour {
 			timer -= Time.deltaTime;
 			return;
 		}
+		
+		
 
-		if(curhealth < MaxHealth / 2){
+		if( (curhealth < MaxHealth / 2) && curState != BossState.Dying){
 			if(Random.Range(0, 100) == 0){
 				MakeSpark();
 			}
@@ -201,6 +206,12 @@ public class Boss : MonoBehaviour {
 			if(generator.enabled){
 				generator.enabled = false;
 			}
+			
+			if(startFadeOut){
+				return;
+			}
+			
+			startFadeOut = true;
 
 			graphic.DOFade(0f, 5f).OnComplete(delegate{
 				gameManager.DisplayResult();

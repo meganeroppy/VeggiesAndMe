@@ -1,17 +1,25 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using DG.Tweening;
 
 public class Score : MonoBehaviour {
-
-	[SerializeField]
-	protected Text text;
 	
+	[SerializeField]
+	protected TextMesh textMesh;
+	
+	public string text{
+		set{
+			textMesh.text = value;
+		}
+	}
+	/*
 	protected void Update(){
-		if(text != null){
-		text.text = "Score:" + GameManager.score.ToString();
+		
+		if(textMesh != null){
+			textMesh.text = "your score\n" + GameManager.score.ToString();
 		}
 	
 	}
-
+	*/
 }

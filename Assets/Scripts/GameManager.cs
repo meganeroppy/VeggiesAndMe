@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-
+using DG.Tweening;
 public class GameManager : MonoBehaviour {
 
 	private const float MaxTime = 35f;
@@ -10,14 +10,19 @@ public class GameManager : MonoBehaviour {
 	
 	public bool started{get; set;} // game is ongoing or not
 	public bool done{get; set;} // game is done or not
-
+	public bool readyToRestart{get; set;} // displaying result is finished
+	
 	[SerializeField]
 	private Generator generator;
+	
+	[SerializeField]
+	private Score scoreText;
 
 	private void Awake(){
 		Init();
 		started = false;
 		done = false;
+		readyToRestart = false;
 	}
 
 
@@ -50,7 +55,7 @@ public class GameManager : MonoBehaviour {
 	
 	private void Update(){
 
-		if(done){ 
+		if(readyToRestart){ 
 			if(Input.anyKeyDown){
 				Restart();
 			}
@@ -94,6 +99,18 @@ public class GameManager : MonoBehaviour {
 	}
 
 	public void DisplayResult(){
+	
 		Debug.Log("DisplayResult");
+		
+		
+		Vector3 offset = new Vector3(0f, 5f, 5f);
+		
+		Score obj = Instantiate(scoreText).GetComponent<Score>();
+		obj.transform.position = this.transform.position = offset;
+		obj.text = "your score\n" + score;
+		obj.transform.DOMove(new Vector3(0f, 0f, 5f), 5f).OnComplete(delegate{
+			readyToRestart = true;
+		});
+		
 	}
 }
