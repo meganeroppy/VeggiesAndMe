@@ -24,6 +24,24 @@ public class Boss : MonoBehaviour {
 		{3, Vector3.left},
 	};
 
+	// face
+	private enum FaceStatus{
+		Default,
+		Damage,
+		Wounded,
+		Lose,
+	};
+	Dictionary<FaceStatus, int> faces = new Dictionary<FaceStatus, int>(){
+		{FaceStatus.Default, 0},
+		{FaceStatus.Damage, 1},
+		{FaceStatus.Wounded, 2},
+		{FaceStatus.Lose, 3},
+	};
+	[SerializeField]
+	private float damageFace_duration = 0.5f;
+	private float faceChangeTimer = 0f;
+
+
 	[SerializeField]
 	private int MaxHealth = 30;
 	private  int curhealth = 0;
@@ -48,10 +66,6 @@ public class Boss : MonoBehaviour {
 	private float greetDuration = 1.2f;
 	private float greetTimer = 0f;
 
-	// reaction
-	[SerializeField]
-	private GameObject spark;
-
 
 	// about emerging
 	[SerializeField] 
@@ -62,7 +76,15 @@ public class Boss : MonoBehaviour {
 
 	// about attacking
 	private Generator generator;
+
+	//about visual
 	private SpriteRenderer graphic;
+	private SpriteRenderer face;
+
+	[SerializeField]
+	private Sprite[] facePattern;
+	[SerializeField]
+	private GameObject spark;
 
 	// se
 	private  AudioSource myAudio;
@@ -74,6 +96,8 @@ public class Boss : MonoBehaviour {
 		generator = this.transform.GetChild(0).GetComponent<Generator>();
 		generator.enabled = false;
 		graphic = this.transform.GetChild(1).GetComponent<SpriteRenderer>();
+		face = graphic.transform.GetChild(0).GetComponent<SpriteRenderer>();
+		face.sprite = facePattern[faces[ FaceStatus.Default]];
 		myAudio = this.GetComponent<AudioSource>();
 
 		// about emerging
@@ -93,10 +117,14 @@ public class Boss : MonoBehaviour {
 			});
 
 		// about emerging : alpha
+		face.material.DOFade(0f, 0f);
 		graphic.material.DOFade(0f, 0f).OnComplete(delegate{
-			graphic.material.DOFade(1f, emergeDuration).SetEase(Ease.InQuint);
-
+			graphic.material.DOFade(1f, emergeDuration).SetEase(Ease.InQuint).OnComplete(delegate{
+				face.material.DOFade(1f, emergeDuration).SetEase(Ease.InOutBack);
+			});
 		});
+
+			
 
 
 	}
@@ -105,6 +133,12 @@ public class Boss : MonoBehaviour {
 		if(timer > 0f){
 			timer -= Time.deltaTime;
 			return;
+		}
+
+		if(curhealth < MaxHealth / 2){
+			if(Random.Range(0, 100) == 0){
+				MakeSpark();
+			}
 		}
 
 		switch(curState){
@@ -129,6 +163,17 @@ public class Boss : MonoBehaviour {
 			break;	
 		case BossState.Attacking :
 
+			if(faceChangeTimer > 0f){
+				faceChangeTimer -= Time.deltaTime;
+				if(faceChangeTimer <= 0f){
+					if(curhealth < MaxHealth / 3){
+						face.sprite = facePattern[faces[FaceStatus.Wounded]];
+					}else{
+						face.sprite = facePattern[faces[FaceStatus.Default]];
+					}
+				}
+			}
+
 			if(!gameManager.started){
 				gameManager.started = true;
 			}
@@ -149,6 +194,7 @@ public class Boss : MonoBehaviour {
 
 			this.transform.DOMove(this.transform.position + emergePosOffset, emergeDuration);
 			graphic.DOFade(0f, emergeDuration);
+			face.DOFade(0f, emergeDuration);
 
 		break;	
 		case BossState.Dying :
@@ -159,6 +205,7 @@ public class Boss : MonoBehaviour {
 			graphic.DOFade(0f, 5f).OnComplete(delegate{
 				gameManager.DisplayResult();
 			});
+			face.DOFade(0f, 5f);
 		break;	
 		case BossState.Idling :
 			break;
@@ -170,29 +217,42 @@ public class Boss : MonoBehaviour {
 			return;
 		}
 
-		// se
-		myAudio.PlayOneShot(se_crash);
-
-		// reaction
-		Vector3 dir = punchDir[Random.Range(0, 4)];
-		float force = Random.Range(0.5f, 2.5f);
-		this.transform.DOPunchPosition(dir * force, 0.1f, 100, 10f).OnComplete(delegate{
-			this.transform.position = defaultPos;
-		});
-
-		// effect
-		
-		Vector3 offset = new Vector3(Random.Range(-3f, 3f), Random.Range(-3f, 3f), -1f); 
-		Quaternion rot = Quaternion.identity;
-		Instantiate(spark, graphic.transform.position + offset, rot);
-		
-
 		curhealth -= val;
-
+		
 		if(curhealth <= 0){
 			gameManager.done = true;
 			curState = BossState.Dying;
+
+			//face
+			face.sprite = facePattern[faces[FaceStatus.Lose]];
+
 			timer = wait;
+		}else{
+
+			face.sprite = facePattern[faces[FaceStatus.Damage]];
+			faceChangeTimer = damageFace_duration;
+
+			// reaction
+			Vector3 dir = punchDir[Random.Range(0, 4)];
+			float force = Random.Range(0.5f, 2.5f);
+			this.transform.DOPunchPosition(dir * force, 0.1f, 100, 10f).OnComplete(delegate{
+				this.transform.position = defaultPos;
+			});
+			
+			// effect
+			MakeSpark();
+		}
+
+		// se
+		myAudio.PlayOneShot(se_crash);
+
+	}
+
+	private void MakeSpark(int num=1){
+		for(int i = 0 ; i < num ; i++){
+			Vector3 offset = new Vector3(Random.Range(-3f, 3f), Random.Range(-3f, 3f), -1f); 
+			Quaternion rot = Quaternion.identity;
+			Instantiate(spark, graphic.transform.position + offset, rot);
 		}
 	}
 

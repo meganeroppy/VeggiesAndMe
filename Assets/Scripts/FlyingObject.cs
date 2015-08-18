@@ -25,6 +25,9 @@ public class FlyingObject : MonoBehaviour {
 	protected AudioClip se;
 	
 	protected bool rebounding = false;
+
+	private Vector3 offset = new Vector3(0f,-1f, 0f);
+
 	
 	protected virtual void Awake(){
 		graphic = this.transform.GetChild(0).gameObject;
@@ -50,14 +53,13 @@ public class FlyingObject : MonoBehaviour {
 			Instantiate(effect_rebound, transform.position, transform.rotation);
 		}else{
 			if(col.tag.Equals("Boss")){
-				Instantiate(effect_die, transform.position, transform.rotation);
+				Instantiate(effect_die, transform.position + offset, transform.rotation);
 				col.transform.parent.GetComponent<Boss>().ReduceHealth();
 			}
 			Die();
 			return;
 		}
 		Rebound();
-		
 	}
 
 	public virtual void Die(){
@@ -68,7 +70,6 @@ public class FlyingObject : MonoBehaviour {
 	
 	public virtual void  Rebound(float force=1){
 		rebounding =true;
-		
 	}
 	
 
