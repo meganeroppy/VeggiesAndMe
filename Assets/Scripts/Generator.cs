@@ -101,9 +101,9 @@ public class Generator : MonoBehaviour {
 	
 	public void Quicken(){
 		if(interval > interval_min){
-			interval *= 0.92f;
+			interval *= 0.94f;
 			
-			myAudio.pitch *= 1.0f;
+			myAudio.pitch *= 1.05f;
 		}
 
 	}

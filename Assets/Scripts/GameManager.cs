@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using DG.Tweening;
+
 public class GameManager : MonoBehaviour {
 
 	private const float MaxTime = 35f;
@@ -16,21 +17,31 @@ public class GameManager : MonoBehaviour {
 	private Generator generator;
 	
 	[SerializeField]
+	private Boss boss;
+	
+	[SerializeField]
+	private Score scoreTextPrefab;
 	private Score scoreText;
-
+	
 	private void Awake(){
 		Init();
-		started = false;
-		done = false;
-		readyToRestart = false;
 	}
 
 
 	private void Init(){
 		score = 0;
+		
 		time = MaxTime;
+		started = false;
+		done = false;
+		readyToRestart = false;
+		
+		if(scoreText != null){
+			Destroy( scoreText.gameObject);
+		}
 
 		generator.Init();
+		boss.Init();
 	}
 	
 	public static int score{
@@ -105,10 +116,10 @@ public class GameManager : MonoBehaviour {
 		
 		Vector3 offset = new Vector3(0f, 5f, 5f);
 		
-		Score obj = Instantiate(scoreText).GetComponent<Score>();
-		obj.transform.position = this.transform.position = offset;
-		obj.text = "your score\n" + score;
-		obj.transform.DOMove(new Vector3(0f, 0f, 5f), 5f).OnComplete(delegate{
+		scoreText = Instantiate(scoreTextPrefab).GetComponent<Score>();
+		scoreText.transform.position = this.transform.position = offset;
+		scoreText.text = "your score\n" + score;
+		scoreText.transform.DOMove(new Vector3(0f, 0f, 5f), 5f).OnComplete(delegate{
 			readyToRestart = true;
 		});
 		
