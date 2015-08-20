@@ -10,7 +10,7 @@ public class GameManager : MonoBehaviour {
 	private static float _time = 0f;
 	
 	public bool started{get; set;} // game is ongoing or not
-	public bool done{get; set;} // game is done or not
+	public static bool done{get; set;} // game is done or not
 	public bool readyToRestart{get; set;} // displaying result is finished
 	
 	[SerializeField]
@@ -109,16 +109,21 @@ public class GameManager : MonoBehaviour {
 		Init();
 	}
 
-	public void DisplayResult(){
+	public void DisplayResult(bool clear=false){
 	
 		Debug.Log("DisplayResult");
 		
-		
 		Vector3 offset = new Vector3(0f, 5f, 5f);
-		
+
+		int clearTime = clear ? Mathf.FloorToInt(MaxTime - time) : 0;
+		int restTime = clear ? Mathf.FloorToInt(time) : 0;
+		int totalScore = clear ? score + restTime * 10 : score;
+
 		scoreText = Instantiate(scoreTextPrefab).GetComponent<Score>();
 		scoreText.transform.position = this.transform.position = offset;
-		scoreText.text = "your score\n" + score;
+		scoreText.text =
+			(clear ? "clear time\n" + clearTime.ToString() + " = " + (restTime * 10).ToString() + "pt\n" : "") 
+			+ "your score\n" + totalScore + "pt";
 		scoreText.transform.DOMove(new Vector3(0f, 0f, 5f), 5f).OnComplete(delegate{
 			readyToRestart = true;
 		});

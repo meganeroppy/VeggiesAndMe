@@ -25,8 +25,9 @@ public class FlyingObject : MonoBehaviour {
 	protected AudioClip se;
 	
 	protected bool rebounding = false;
+	protected bool dying = false;
 
-	private Vector3 offset = new Vector3(0f,-1f, 0f);
+	private Vector3 offset = new Vector3(0f,-1f, -0.5f);
 
 	
 	protected virtual void Awake(){
@@ -35,11 +36,23 @@ public class FlyingObject : MonoBehaviour {
 	}
 	
 	protected virtual void Update(){
-		graphic.transform.Rotate(rspd * Time.deltaTime); 
-		
+
+		if(GameManager.done){
+			Die();
+			return;
+		}
+
+		float speed = mspd;
+
+		if(!rebounding){
+			graphic.transform.Rotate(rspd * Time.deltaTime);
+		}else{
+			speed *= 2.5f;
+		}
+
 		int dir = !rebounding ? -1 : 1;
 		
-		this.transform.Translate(0,0, mspd * dir * Time.deltaTime);
+		this.transform.Translate(0,0, speed * dir * Time.deltaTime);
 		
 	}
 	
@@ -53,17 +66,25 @@ public class FlyingObject : MonoBehaviour {
 			Instantiate(effect_rebound, transform.position, transform.rotation);
 		}else{
 			if(col.tag.Equals("Boss")){
-				Instantiate(effect_die, transform.position + offset, transform.rotation);
 				col.transform.parent.GetComponent<Boss>().ReduceHealth();
+				Die();
+			}else{
+				Die(false);
+				return;
 			}
-			Die();
-			return;
 		}
 		Rebound();
 	}
 
-	public virtual void Die(){
-	
+	public virtual void Die(bool withEffect=true){
+		if(dying){
+			return;
+		}
+		dying = true;
+
+		if(withEffect){
+			Instantiate(effect_die, transform.position + offset, transform.rotation);
+		}
 		graphic.SetActive(false);
 		Destroy(this.gameObject, 0.5f);
 	}

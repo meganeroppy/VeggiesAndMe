@@ -37,7 +37,6 @@ public class Generator : MonoBehaviour {
 	
 	protected virtual void Awake(){
 		myAudio = GetComponent<AudioSource>();
-
 	}
 
 	public void Init(){
@@ -64,37 +63,38 @@ public class Generator : MonoBehaviour {
 		myAudio.PlayOneShot(clip);
 	
 		bool done = false;
+		bool withSpecial = false;
 		do{
-		GameObject obj;
-		// choose a child 
-		
-		int seed = Random.Range(0, 12);
-		
-		switch(seed){
-		case 0:
-			obj = Instantiate(badItem) as GameObject;
-			break;
+			GameObject obj;
+			// choose a child 
 			
-		case 1:
-			obj = Instantiate(postponeItem) as GameObject;
-			break;
-		default:
+			int seed = withSpecial ? Random.Range(2, 36) : Random.Range(0, 36);
+			switch(seed){
+			case 0:
+				obj = Instantiate(badItem) as GameObject;
+				withSpecial = true;
+				break;
+			case 1:
+				obj = Instantiate(postponeItem) as GameObject;
+				withSpecial = true;
+				break;
+			default:
 				int seed2 = Random.Range(0, children.Length);
 				obj = Instantiate(children[seed2]) as GameObject;
 				done = true;
-			break;
-		}
+				break;
+			}
 
 
-		// set angle
-		float rot = Random.Range(-maxRot, maxRot);
-		this.transform.rotation = Quaternion.Euler (new Vector3(0f, 0f, rot));
+			// set angle
+			float rot = Random.Range(-maxRot, maxRot);
+			this.transform.rotation = Quaternion.Euler (new Vector3(0f, 0f, rot));
 
-		// set distance from center
-		float offset = Random.Range(minOffset, maxOffset);
-		generatePos.transform.localPosition = new Vector3(0f, offset, 0f);
+			// set distance from center
+			float offset = Random.Range(minOffset, maxOffset);
+			generatePos.transform.localPosition = new Vector3(0f, offset, 0f);
 
-		obj.transform.position = generatePos.position;
+			obj.transform.position = generatePos.position;
 		
 		}while(!done);
 	}

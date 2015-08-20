@@ -45,7 +45,7 @@ public class Boss : MonoBehaviour {
 
 
 	[SerializeField]
-	private int MaxHealth = 30;
+	private int MaxHealth = 10;//30;
 	private  int curhealth = 0;
 
 	// game manager
@@ -136,11 +136,9 @@ public class Boss : MonoBehaviour {
 		// about emerging : alpha
 		face.material.DOFade(0f, 0f);
 		graphic.material.DOFade(0f, 0f).OnComplete(delegate{
-			Debug.Log("graphic Fadein start");
-			
+
 			graphic.material.DOFade(1f, emergeDuration).SetEase(Ease.InQuint).OnComplete(delegate{
-				Debug.Log("face fadein start");
-				
+
 				face.material.DOFade(1f, emergeDuration).SetEase(Ease.InOutBack);
 			});
 		});
@@ -206,10 +204,6 @@ public class Boss : MonoBehaviour {
 				generator.enabled = false;
 			}
 
-
-			
-
-
 		break;	
 		case BossState.Dying :
 			if(generator.enabled){
@@ -223,7 +217,7 @@ public class Boss : MonoBehaviour {
 			startFadeOut = true;
 
 			graphic.material.DOFade(0f, 5f).OnComplete(delegate{
-				gameManager.DisplayResult();
+				gameManager.DisplayResult(true);
 			});
 			face.material.DOFade(0f, 5f);
 		break;	
@@ -240,7 +234,7 @@ public class Boss : MonoBehaviour {
 		curhealth -= val;
 		
 		if(curhealth <= 0){
-			gameManager.done = true;
+			GameManager.done = true;
 			curState = BossState.Dying;
 
 			//face
@@ -296,7 +290,7 @@ public class Boss : MonoBehaviour {
 		face.material.DOFade(0f, emergeDuration).SetDelay(wait);
 		
 		this.transform.DOMove(defaultPos + emergePosOffset, emergeDuration).SetDelay(wait).OnComplete(delegate{
-			gameManager.DisplayResult();
+			gameManager.DisplayResult(false);
 		});
 	}
 }

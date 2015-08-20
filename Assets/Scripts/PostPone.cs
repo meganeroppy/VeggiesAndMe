@@ -11,9 +11,9 @@ public class PostPone : FlyingObject {
 		aura = transform.GetChild(1).gameObject;
 	}
 	
-	public override void Die ()
+	public override void Die (bool withEffect=true)
 	{
 		aura.SetActive(false);
-		base.Die ();
+		base.Die (withEffect);
 	}
 }
