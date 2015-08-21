@@ -2,33 +2,41 @@
 using System.Collections;
 using DG.Tweening;
 
-public class GameManager : MonoBehaviour {
+public class GameManager : MonoBehaviour
+{
 
-	private const float MaxTime = 35f;
+	[SerializeField]
+	private float
+		MaxTime = 35f;
 
 	private static int _score = 0;
 	private static float _time = 0f;
 	
-	public bool started{get; set;} // game is ongoing or not
-	public static bool done{get; set;} // game is done or not
-	public bool readyToRestart{get; set;} // displaying result is finished
+	public bool started{ get; set; } // game is ongoing or not
+	public static bool done{ get; set; } // game is done or not
+	public bool readyToRestart{ get; set; } // displaying result is finished
 	
 	[SerializeField]
-	private Generator generator;
+	private Generator
+		generator;
 	
 	[SerializeField]
-	private Boss boss;
+	private Boss
+		boss;
 	
 	[SerializeField]
-	private Score scoreTextPrefab;
+	private Score
+		scoreTextPrefab;
 	private Score scoreText;
 	
-	private void Awake(){
-		Init();
+	private void Awake ()
+	{
+		Init ();
 	}
 
 
-	private void Init(){
+	private void Init ()
+	{
 		score = 0;
 		
 		time = MaxTime;
@@ -36,95 +44,101 @@ public class GameManager : MonoBehaviour {
 		done = false;
 		readyToRestart = false;
 		
-		if(scoreText != null){
-			Destroy( scoreText.gameObject);
+		if (scoreText != null) {
+			Destroy (scoreText.gameObject);
 		}
 
-		generator.Init();
-		boss.Init();
+		generator.Init ();
+		boss.Init ();
 	}
 	
-	public static int score{
-		get{
+	public static int score {
+		get {
 			return _score;
 		}
 		
-		set{
+		set {
 			_score = value;
 		}
 	}
 	
-	public static float time{
-		get{
+	public static float time {
+		get {
 			return _time;
 		}
 		
-		set{
+		set {
 			_time = value;
 		}
 	}
 	
-	private void Update(){
+	private void Update ()
+	{
 
-		if(readyToRestart){ 
-			if(Input.anyKeyDown){
-				Restart();
+		if (readyToRestart) { 
+			if (Input.anyKeyDown) {
+				Restart ();
 			}
 		}
 
-		if(!started || done){
+		if (!started || done) {
 			return;
 		}
 
 		// reduce limit time
-		if(time > 0 ){
+		if (time > 0) {
 			time -= Time.deltaTime;
-		}else{
-			if(!done){
+		} else {
+			if (!done) {
 				// game over 
-				GameObject.Find("Boss").GetComponent<Boss>().Escape();
+				GameObject.Find ("Boss").GetComponent<Boss> ().Escape ();
 				done = true;
 			}
 		}
 	}
 	
-	public void AddScore(int val=1){
+	public void AddScore (int val=1)
+	{
 		score += val;
 		
-		if(generator != null){
-			generator.Quicken();
+		if (generator != null) {
+			generator.Quicken ();
 		}
 	}
 
-	public void ReduceScore(int val=1){
+	public void ReduceScore (int val=1)
+	{
 		score -= val;
 	}
 	
-	public void AddTime(float val=1f){
+	public void AddTime (float val=1f)
+	{
 		time += val;
 	}
 
 
-	private void Restart(){
-		Init();
+	private void Restart ()
+	{
+		Init ();
 	}
 
-	public void DisplayResult(bool clear=false){
+	public void DisplayResult (bool clear=false)
+	{
 	
-		Debug.Log("DisplayResult");
+		Debug.Log ("DisplayResult");
 		
-		Vector3 offset = new Vector3(0f, 5f, 5f);
+		Vector3 offset = new Vector3 (0f, 5f, 20f);
 
-		int clearTime = clear ? Mathf.FloorToInt(MaxTime - time) : 0;
-		int restTime = clear ? Mathf.FloorToInt(time) : 0;
+		int clearTime = clear ? Mathf.FloorToInt (MaxTime - time) : 0;
+		int restTime = clear ? Mathf.FloorToInt (time) : 0;
 		int totalScore = clear ? score + restTime * 10 : score;
 
-		scoreText = Instantiate(scoreTextPrefab).GetComponent<Score>();
+		scoreText = Instantiate (scoreTextPrefab).GetComponent<Score> ();
 		scoreText.transform.position = this.transform.position = offset;
 		scoreText.text =
-			(clear ? "clear time\n" + clearTime.ToString() + " = " + (restTime * 10).ToString() + "pt\n" : "") 
+			(clear ? "clear time\n" + clearTime.ToString () + " = " + (restTime * 10).ToString () + "pt\n" : "") 
 			+ "your score\n" + totalScore + "pt";
-		scoreText.transform.DOMove(new Vector3(0f, 0f, 5f), 5f).OnComplete(delegate{
+		scoreText.transform.DOMove (new Vector3 (0f, 0f, 20f), 5f).OnComplete (delegate {
 			readyToRestart = true;
 		});
 		

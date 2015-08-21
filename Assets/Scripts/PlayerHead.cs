@@ -1,7 +1,8 @@
 using UnityEngine;
 using System.Collections;
 
-public class PlayerHead : MonoBehaviour {
+public class PlayerHead : MonoBehaviour
+{
 	
 	Transform playerCam;
 	
@@ -9,55 +10,60 @@ public class PlayerHead : MonoBehaviour {
 	//float maxAngleZ = 36f;
 	
 	[SerializeField]
-	private GameManager game;
+	private GameManager
+		game;
 	
 	// Use this for initialization
-	void Start () {
-		playerCam = GameObject.Find("Player").transform.GetChild(0);
+	void Start ()
+	{
+		playerCam = GameObject.Find ("Player").transform.GetChild (0);
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void Update ()
+	{
 	
-		if(GameManager.time <= 0){
-		return;
+		if (GameManager.time <= 0) {
+			return;
 		}
 		
 		Vector3 playerCamRot = playerCam.rotation.eulerAngles;
 		//Vector3 newRot = new Vector3(this.transform.rotation.x, playerCamRot.y, this.transform.rotation.z);
 		
-		Vector3 newRot = new Vector3(playerCamRot.x, playerCamRot.y, playerCamRot.z);
+		Vector3 newRot = new Vector3 (playerCamRot.x, playerCamRot.y, playerCamRot.z);
 		
 		//float z = Input.GetAxis("Horizontal") * -maxAngleZ;
 		
 		//this.transform.rotation = Quaternion.Euler(newRot.x, newRot.y, z);
-		this.transform.rotation = Quaternion.Euler(0, 0, -newRot.y);
+		this.transform.rotation = Quaternion.Euler (0, 0, -newRot.y);
 		//this.transform.rotation = playerCam.rotation;
 
 //		Debug.Log("banana rot:" + this.transform.rotation.eulerAngles + "playerCam rot:" + playerCam.rotation.eulerAngles);
 
 	}
 	
-	protected virtual void OnTriggerEnter(Collider col){
+	protected virtual void OnTriggerEnter (Collider col)
+	{
 		Hit (col);
 	}
 
-	public void Hit(Collider col){
-		if(!col.tag.Equals("FlyingObject")){
+	public void Hit (Collider col)
+	{
+		if (!col.tag.Equals ("FlyingObject")) {
 			return;
 		}
 
-		if(game != null){
-			game = GameObject.Find("GameManager").GetComponent<GameManager>();
+		if (game != null) {
+			game = GameObject.Find ("GameManager").GetComponent<GameManager> ();
 		}
 
-		if(col.name.Contains("Mush")){
-			game.ReduceScore(30);
-		}else if(col.name.Contains("Clock")){
-			game.AddTime(0.7f);
+		if (col.name.Contains ("Mush")) {
+			game.ReduceScore (30);
+		} else if (col.name.Contains ("Clock")) {
+			game.AddTime (0.7f);
 			
-		}else{
-			game.AddScore(10);
+		} else {
+			game.AddScore (10);
 		}
 			
 	}
