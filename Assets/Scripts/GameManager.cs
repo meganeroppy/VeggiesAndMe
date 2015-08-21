@@ -6,8 +6,7 @@ public class GameManager : MonoBehaviour
 {
 
 	[SerializeField]
-	private float
-		MaxTime = 35f;
+	private float	MaxTime = 35f;
 
 	private static int _score = 0;
 	private static float _time = 0f;
@@ -15,7 +14,8 @@ public class GameManager : MonoBehaviour
 	public bool started{ get; set; } // game is ongoing or not
 	public static bool done{ get; set; } // game is done or not
 	public bool readyToRestart{ get; set; } // displaying result is finished
-	
+	private bool hurryup = false;
+
 	[SerializeField]
 	private Generator
 		generator;
@@ -28,9 +28,12 @@ public class GameManager : MonoBehaviour
 	private Score
 		scoreTextPrefab;
 	private Score scoreText;
+
+	private AudioSource myAudio;
 	
 	private void Awake ()
 	{
+		myAudio = GetComponent<AudioSource>();
 		Init ();
 	}
 
@@ -43,13 +46,17 @@ public class GameManager : MonoBehaviour
 		started = false;
 		done = false;
 		readyToRestart = false;
-		
+		hurryup = false;
+
 		if (scoreText != null) {
 			Destroy (scoreText.gameObject);
 		}
 
 		generator.Init ();
 		boss.Init ();
+
+		myAudio.pitch = 1.0f;
+
 	}
 	
 	public static int score {
@@ -88,6 +95,10 @@ public class GameManager : MonoBehaviour
 		// reduce limit time
 		if (time > 0) {
 			time -= Time.deltaTime;
+
+			if(time < 10f){
+				myAudio.pitch = 1.15f;
+			}
 		} else {
 			if (!done) {
 				// game over 
@@ -103,6 +114,7 @@ public class GameManager : MonoBehaviour
 		
 		if (generator != null) {
 			generator.Quicken ();
+//			myAudio.pitch *= 1.0005f;
 		}
 	}
 

@@ -19,7 +19,7 @@ public class FlyingObject : MonoBehaviour {
 	[SerializeField]
 	protected GameObject effect_rebound;
 		[SerializeField]
-	protected GameObject effect_die;
+	protected GameObject[] effect_die;
 	
 	[SerializeField]
 	protected AudioClip se;
@@ -38,7 +38,7 @@ public class FlyingObject : MonoBehaviour {
 	protected virtual void Update(){
 
 		if(GameManager.done){
-			Die();
+			Die(GameManager.time > 0);
 			return;
 		}
 
@@ -63,7 +63,9 @@ public class FlyingObject : MonoBehaviour {
 		
 		if(col.tag.Equals("Player")){
 			myAudio.PlayOneShot(se);
-			Instantiate(effect_rebound, transform.position, transform.rotation);
+			Instantiate(effect_rebound, transform.position, transform.rotation);	
+			Rebound();
+
 		}else{
 			if(col.tag.Equals("Boss")){
 				col.transform.parent.GetComponent<Boss>().ReduceHealth();
@@ -73,7 +75,6 @@ public class FlyingObject : MonoBehaviour {
 				return;
 			}
 		}
-		Rebound();
 	}
 
 	public virtual void Die(bool withEffect=true){
@@ -83,7 +84,8 @@ public class FlyingObject : MonoBehaviour {
 		dying = true;
 
 		if(withEffect){
-			Instantiate(effect_die, transform.position + offset, transform.rotation);
+			int seed = Random.Range(0,3);
+			Instantiate(effect_die[seed], transform.position + offset, transform.rotation);
 		}
 		graphic.SetActive(false);
 		Destroy(this.gameObject, 0.5f);

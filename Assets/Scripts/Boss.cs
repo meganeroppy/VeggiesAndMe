@@ -93,8 +93,17 @@ public class Boss : MonoBehaviour {
 
 	// se
 	private  AudioSource myAudio;
+	private  AudioSource myAudio_voice;
 	[SerializeField]
 	private AudioClip se_crash;
+	[SerializeField]
+	private AudioClip voice01;
+	[SerializeField]
+	private AudioClip voice02;
+	[SerializeField]
+	private AudioClip voice03;
+	[SerializeField]
+	private AudioClip voice03b;
 
 	private void Awake(){
 	
@@ -103,7 +112,8 @@ public class Boss : MonoBehaviour {
 		graphic = this.transform.GetChild(1).GetComponent<SpriteRenderer>();
 		face = graphic.transform.GetChild(0).GetComponent<SpriteRenderer>();
 		myAudio = this.GetComponent<AudioSource>();
-		
+		myAudio_voice = graphic.GetComponent<AudioSource>();
+
 		// about emerging
 		defaultPos = this.transform.position;
 	}
@@ -136,9 +146,7 @@ public class Boss : MonoBehaviour {
 		// about emerging : alpha
 		face.material.DOFade(0f, 0f);
 		graphic.material.DOFade(0f, 0f).OnComplete(delegate{
-
 			graphic.material.DOFade(1f, emergeDuration).SetEase(Ease.InQuint).OnComplete(delegate{
-
 				face.material.DOFade(1f, emergeDuration).SetEase(Ease.InOutBack);
 			});
 		});
@@ -167,6 +175,7 @@ public class Boss : MonoBehaviour {
 				saying = Instantiate(sayingPrefab, graphic.transform.position + sayingOffset, graphic.transform.rotation) as GameObject;
 				saying.transform.SetParent(this.transform);
 				greetTimer = greetDuration;
+				myAudio_voice.PlayOneShot(voice01);
 			}
 
 			if(greetTimer < 0f){
@@ -237,6 +246,9 @@ public class Boss : MonoBehaviour {
 			GameManager.done = true;
 			curState = BossState.Dying;
 
+			// voice
+			myAudio_voice.PlayOneShot(voice03);
+
 			//face
 			face.sprite = facePattern[faces[FaceStatus.Lose]];
 
@@ -285,11 +297,15 @@ public class Boss : MonoBehaviour {
 			saying.transform.SetParent(this.transform);
 		}
 		*/
+
+		// voice
+		myAudio_voice.PlayOneShot(voice02);
+
 		
 		graphic.material.DOFade(0f, emergeDuration).SetDelay(wait);
 		face.material.DOFade(0f, emergeDuration).SetDelay(wait);
 		
-		this.transform.DOMove(defaultPos + emergePosOffset, emergeDuration).SetDelay(wait).OnComplete(delegate{
+		this.transform.DOMove(defaultPos + emergePosOffset, emergeDuration).SetDelay(wait * 2).OnComplete(delegate{
 			gameManager.DisplayResult(false);
 		});
 	}
