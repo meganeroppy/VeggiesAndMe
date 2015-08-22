@@ -8,8 +8,6 @@ public class GameManager : MonoBehaviour
 	[SerializeField]
 	private float	MaxTime = 40f;
 
-	private static int _score = 0;
-	private static float _time = 0f;
 	
 	public bool started{ get; set; } // game is ongoing or not
 	public static bool done{ get; set; } // game is done or not
@@ -57,25 +55,8 @@ public class GameManager : MonoBehaviour
 
 	}
 	
-	public static int score {
-		get {
-			return _score;
-		}
-		
-		set {
-			_score = value;
-		}
-	}
-	
-	public static float time {
-		get {
-			return _time;
-		}
-		
-		set {
-			_time = value;
-		}
-	}
+	public static int score {get;set;}
+	public static float time {get;set;}
 	
 	private void Update ()
 	{
@@ -143,12 +124,12 @@ public class GameManager : MonoBehaviour
 		
 		int clearTime = Mathf.FloorToInt (MaxTime - time);
 		int restTime = Mathf.FloorToInt (time);
-		int totalScore =score + restTime * 10;
+		int totalScore =score + restTime * 100;
 		
 		scoreText = Instantiate (scoreTextPrefab).GetComponent<Score> ();
 		scoreText.transform.position = this.transform.position = offset;
 		scoreText.text =
-			("clear time\n" + clearTime.ToString () + " = " + (restTime * 10).ToString () + "pt\n") 
+			("clear time\n" + clearTime.ToString () + " = " + (restTime * 100).ToString () + "pt\n") 
 				+ "your score\n" + totalScore + "pt";
 		scoreText.transform.DOMove (new Vector3 (0f, 0f, 20f), 5f).OnComplete (delegate {
 			readyToRestart = true;

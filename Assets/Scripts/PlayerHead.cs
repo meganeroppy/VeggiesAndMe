@@ -63,7 +63,7 @@ public class PlayerHead : MonoBehaviour
 			game.AddTime (0.7f);
 			
 		} else {
-			game.AddScore (10);
+			game.AddScore (100);
 		}
 			
 	}

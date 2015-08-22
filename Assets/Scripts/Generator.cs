@@ -8,10 +8,10 @@ public class Generator : MonoBehaviour
 	protected float
 		interval = 0.5f;
 	[SerializeField]
-	protected float
+	protected  float
 		interval_max = 3f;
 	[SerializeField]
-	protected float
+	protected  float
 		interval_min = 0.15f;
 	[SerializeField]
 	protected float
@@ -115,7 +115,7 @@ public class Generator : MonoBehaviour
 		} while(!done);
 	}
 	
-	public void Quicken ()
+	public  void Quicken ()
 	{
 		if (interval > interval_min) {
 			interval *= 0.94f;			

@@ -91,7 +91,10 @@ public class Boss : MonoBehaviour {
 	
 	// about escaping
 	private bool startFadeOut;
-
+	
+	[SerializeField]
+	private ScorePop scorePop;
+	
 	// se
 	private  AudioSource myAudio;
 	private  AudioSource myAudio_voice;
@@ -104,7 +107,7 @@ public class Boss : MonoBehaviour {
 	[SerializeField]
 	private AudioClip voice03;
 	[SerializeField]
-	private AudioClip systemDown;
+	private AudioClip se_escape;
 
 	private void Awake(){
 	
@@ -246,6 +249,8 @@ public class Boss : MonoBehaviour {
 		
 		if(curhealth <= 0){
 			GameManager.done = true;
+			
+			gameManager.AddScore(1500);
 			curState = BossState.Dying;
 
 			// voice
@@ -253,6 +258,11 @@ public class Boss : MonoBehaviour {
 
 			//face
 			face.sprite = facePattern[faces[FaceStatus.Lose]];
+			
+			// score pop
+			ScorePop obj = Instantiate(scorePop).GetComponent<ScorePop>();
+			obj.transform.position = transform.position + Vector3.up * 3;
+			obj.SetText("1500", 5f);	
 			
 			if(saying == null){
 				saying = Instantiate(sayingPrefab[2], graphic.transform.position + sayingOffset, graphic.transform.rotation) as GameObject;
@@ -289,11 +299,11 @@ public class Boss : MonoBehaviour {
 	private void MakeEffect(int num=1){
 		for(int i = 0 ; i < num ; i++){
 			Vector3 offset = new Vector3(Random.Range(-3f, 3f), Random.Range(-3f, 3f), -1f); 
-			GameObject obj = curState == BossState.Dying ? effect[1] : effect[0];
-			Instantiate(obj, graphic.transform.position + offset, Quaternion.identity);
+			Instantiate(effect[0], graphic.transform.position + offset, Quaternion.identity);
 			if(curState == BossState.Dying){
 				offset = new Vector3(Random.Range(-3f, 3f), Random.Range(-3f, 3f), -1f); 
-				Instantiate(effect[0], graphic.transform.position + offset, Quaternion.identity);
+				int seed = Random.Range(1, effect.Length);
+				Instantiate(effect[seed], graphic.transform.position + offset, Quaternion.identity);
 				myAudio.PlayOneShot(se_crash);
 				
 			}
@@ -320,6 +330,7 @@ public class Boss : MonoBehaviour {
 		
 		this.transform.DOMove(defaultPos + emergePosOffset, emergeDuration).SetDelay(waitTmp).OnComplete(delegate{
 			gameManager.DisplayResult(false, 1f);
+			myAudio.PlayOneShot(se_escape);
 			Destroy(saying.gameObject);
 		});
 	}

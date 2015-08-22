@@ -29,6 +29,8 @@ public class FlyingObject : MonoBehaviour {
 
 	private Vector3 offset = new Vector3(0f,-1f, -0.5f);
 
+	[SerializeField]
+	private ScorePop scorePop;
 	
 	protected virtual void Awake(){
 		graphic = this.transform.GetChild(0).gameObject;
@@ -39,6 +41,7 @@ public class FlyingObject : MonoBehaviour {
 
 		if(GameManager.done){
 			Die(GameManager.time > 0);
+			
 			return;
 		}
 
@@ -63,7 +66,7 @@ public class FlyingObject : MonoBehaviour {
 		
 		if(col.tag.Equals("Player")){
 			myAudio.PlayOneShot(se);
-			Instantiate(effect_rebound, transform.position, transform.rotation);	
+			Instantiate(effect_rebound, transform.position, transform.rotation);
 			Rebound();
 
 		}else{
@@ -87,6 +90,16 @@ public class FlyingObject : MonoBehaviour {
 			int seed = Random.Range(0,3);
 			Instantiate(effect_die[seed], transform.position + offset, transform.rotation);
 		}
+		
+		/*
+		if(withEffect){
+			// score pop
+			ScorePop obj = Instantiate(scorePop).GetComponent<ScorePop>();
+			obj.transform.position = transform.position;
+			obj.SetText("100");		
+		}
+		*/
+		
 		graphic.SetActive(false);
 		Destroy(this.gameObject, 0.5f);
 	}
