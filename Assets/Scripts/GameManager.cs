@@ -6,7 +6,7 @@ public class GameManager : MonoBehaviour
 {
 
 	[SerializeField]
-	private float	MaxTime = 35f;
+	private float	MaxTime = 40f;
 
 	private static int _score = 0;
 	private static float _time = 0f;
@@ -14,7 +14,6 @@ public class GameManager : MonoBehaviour
 	public bool started{ get; set; } // game is ongoing or not
 	public static bool done{ get; set; } // game is done or not
 	public bool readyToRestart{ get; set; } // displaying result is finished
-	private bool hurryup = false;
 
 	[SerializeField]
 	private Generator
@@ -46,7 +45,6 @@ public class GameManager : MonoBehaviour
 		started = false;
 		done = false;
 		readyToRestart = false;
-		hurryup = false;
 
 		if (scoreText != null) {
 			Destroy (scoreText.gameObject);
@@ -134,25 +132,40 @@ public class GameManager : MonoBehaviour
 		Init ();
 	}
 
-	public void DisplayResult (bool clear=false)
-	{
+	public void DisplayResult (bool clear=true, float delay=0){
+		string methodName = clear ? "DisplayResult_clear" : "DisplayResult_lose";
+		Invoke(methodName, delay);
+	}
 	
-		Debug.Log ("DisplayResult");
+	private void DisplayResult_clear(){
 		
 		Vector3 offset = new Vector3 (0f, 5f, 20f);
-
-		int clearTime = clear ? Mathf.FloorToInt (MaxTime - time) : 0;
-		int restTime = clear ? Mathf.FloorToInt (time) : 0;
-		int totalScore = clear ? score + restTime * 10 : score;
-
+		
+		int clearTime = Mathf.FloorToInt (MaxTime - time);
+		int restTime = Mathf.FloorToInt (time);
+		int totalScore =score + restTime * 10;
+		
 		scoreText = Instantiate (scoreTextPrefab).GetComponent<Score> ();
 		scoreText.transform.position = this.transform.position = offset;
 		scoreText.text =
-			(clear ? "clear time\n" + clearTime.ToString () + " = " + (restTime * 10).ToString () + "pt\n" : "") 
-			+ "your score\n" + totalScore + "pt";
+			("clear time\n" + clearTime.ToString () + " = " + (restTime * 10).ToString () + "pt\n") 
+				+ "your score\n" + totalScore + "pt";
 		scoreText.transform.DOMove (new Vector3 (0f, 0f, 20f), 5f).OnComplete (delegate {
 			readyToRestart = true;
 		});
+	}
+	
+	private void DisplayResult_lose(){
 		
+		Vector3 offset = new Vector3 (0f, 5f, 20f);
+		
+		int totalScore =  score;
+		
+		scoreText = Instantiate (scoreTextPrefab).GetComponent<Score> ();
+		scoreText.transform.position = this.transform.position = offset;
+		scoreText.text = "your score\n" + totalScore + "pt";
+		scoreText.transform.DOMove (new Vector3 (0f, 0f, 20f), 5f).OnComplete (delegate {
+			readyToRestart = true;
+		});
 	}
 }

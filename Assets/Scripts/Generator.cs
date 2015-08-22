@@ -79,7 +79,7 @@ public class Generator : MonoBehaviour
 		myAudio.PlayOneShot (clip);
 	
 		bool done = false;
-		bool withSpecial = false;
+	//	bool withSpecial = false;
 		do {
 			GameObject obj;
 			// choose a child 
@@ -88,11 +88,11 @@ public class Generator : MonoBehaviour
 			switch (seed) {
 			case 0:
 				obj = Instantiate (badItem) as GameObject;
-				withSpecial = true;
+		//		withSpecial = true;
 				break;
 			case 1:
 				obj = Instantiate (postponeItem) as GameObject;
-				withSpecial = true;
+		//		withSpecial = true;
 				break;
 			default:
 				int seed2 = Random.Range (0, children.Length);

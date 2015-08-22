@@ -12,6 +12,7 @@ public class Boss : MonoBehaviour {
 		Attacking,
 		Escaping,
 		Dying,
+		Gone,
 		Idling,
 	};
 	private  BossState curState;
@@ -60,7 +61,7 @@ public class Boss : MonoBehaviour {
 
 	// about greeting
 	[SerializeField]
-	private GameObject sayingPrefab;
+	private GameObject[] sayingPrefab;
 	private GameObject saying;
 	[SerializeField]
 	private Vector3 sayingOffset = new Vector3(-2f, 3f, -1f); 
@@ -86,7 +87,7 @@ public class Boss : MonoBehaviour {
 	[SerializeField]
 	private Sprite[] facePattern;
 	[SerializeField]
-	private GameObject spark;
+	private GameObject[] effect;
 	
 	// about escaping
 	private bool startFadeOut;
@@ -103,7 +104,7 @@ public class Boss : MonoBehaviour {
 	[SerializeField]
 	private AudioClip voice03;
 	[SerializeField]
-	private AudioClip voice03b;
+	private AudioClip systemDown;
 
 	private void Awake(){
 	
@@ -120,7 +121,6 @@ public class Boss : MonoBehaviour {
 
 	public void Init(){
 	
-		Debug.Log("Boss::Init");
 		startFadeOut = false;
 		curState = BossState.Idling;
 		
@@ -160,9 +160,10 @@ public class Boss : MonoBehaviour {
 			return;
 		}
 		
-		if( (curhealth < MaxHealth / 2) && curState != BossState.Dying){
-			if(Random.Range(0, 100) == 0){
-				MakeSpark();
+		if( (curhealth <= MaxHealth / 2) && (curState == BossState.Attacking || curState == BossState.Dying) ){
+			int max = curState == BossState.Attacking ? 40 : 15;
+			if(Random.Range(0, max) == 0){
+				MakeEffect();
 			}
 		}
 
@@ -172,7 +173,7 @@ public class Boss : MonoBehaviour {
 		case BossState.Greeting :
 
 			if(saying == null){
-				saying = Instantiate(sayingPrefab, graphic.transform.position + sayingOffset, graphic.transform.rotation) as GameObject;
+				saying = Instantiate(sayingPrefab[0], graphic.transform.position + sayingOffset, graphic.transform.rotation) as GameObject;
 				saying.transform.SetParent(this.transform);
 				greetTimer = greetDuration;
 				myAudio_voice.PlayOneShot(voice01);
@@ -192,7 +193,7 @@ public class Boss : MonoBehaviour {
 			if(faceChangeTimer > 0f){
 				faceChangeTimer -= Time.deltaTime;
 				if(faceChangeTimer <= 0f){
-					if(curhealth < MaxHealth / 2){
+					if(curhealth <= MaxHealth / 2){
 						face.sprite = facePattern[faces[FaceStatus.Wounded]];
 					}else{
 						face.sprite = facePattern[faces[FaceStatus.Default]];
@@ -212,7 +213,6 @@ public class Boss : MonoBehaviour {
 			if(generator.enabled){
 				generator.enabled = false;
 			}
-
 		break;	
 		case BossState.Dying :
 			if(generator.enabled){
@@ -224,12 +224,14 @@ public class Boss : MonoBehaviour {
 			}
 			
 			startFadeOut = true;
-
-			graphic.material.DOFade(0f, 5f).OnComplete(delegate{
-				gameManager.DisplayResult(true);
+			graphic.material.DOFade(0f, 5f).SetEase(Ease.InExpo).OnComplete(delegate{
+				gameManager.DisplayResult(true, 1f);
+				Destroy(saying.gameObject);
+				curState = BossState.Gone;
 			});
-			face.material.DOFade(0f, 5f);
+			face.material.DOFade(0f, 5f).SetEase(Ease.InExpo);
 		break;	
+		
 		case BossState.Idling :
 			break;
 		}
@@ -251,12 +253,17 @@ public class Boss : MonoBehaviour {
 
 			//face
 			face.sprite = facePattern[faces[FaceStatus.Lose]];
+			
+			if(saying == null){
+				saying = Instantiate(sayingPrefab[2], graphic.transform.position + sayingOffset, graphic.transform.rotation) as GameObject;
+				saying.transform.SetParent(this.transform);
+			}
 
 			timer = wait;
 		}else{
 
 
-			if(curhealth < MaxHealth / 2){
+			if(curhealth <= MaxHealth / 2){
 				face.sprite = facePattern[faces[FaceStatus.Damage_Wounded]];
 			}else{
 				face.sprite = facePattern[faces[FaceStatus.Damage]];
@@ -271,7 +278,7 @@ public class Boss : MonoBehaviour {
 			});
 			
 			// effect
-			MakeSpark();
+			MakeEffect();
 		}
 
 		// se
@@ -279,11 +286,17 @@ public class Boss : MonoBehaviour {
 
 	}
 
-	private void MakeSpark(int num=1){
+	private void MakeEffect(int num=1){
 		for(int i = 0 ; i < num ; i++){
 			Vector3 offset = new Vector3(Random.Range(-3f, 3f), Random.Range(-3f, 3f), -1f); 
-			Quaternion rot = Quaternion.identity;
-			Instantiate(spark, graphic.transform.position + offset, rot);
+			GameObject obj = curState == BossState.Dying ? effect[1] : effect[0];
+			Instantiate(obj, graphic.transform.position + offset, Quaternion.identity);
+			if(curState == BossState.Dying){
+				offset = new Vector3(Random.Range(-3f, 3f), Random.Range(-3f, 3f), -1f); 
+				Instantiate(effect[0], graphic.transform.position + offset, Quaternion.identity);
+				myAudio.PlayOneShot(se_crash);
+				
+			}
 		}
 	}
 
@@ -291,22 +304,23 @@ public class Boss : MonoBehaviour {
 		curState = BossState.Escaping;
 		face.sprite = facePattern[faces[FaceStatus.Default]];
 		timer = wait;
-		/*
+		
 		if(saying == null){
-			saying = Instantiate(sayingPrefab, graphic.transform.position + sayingOffset, graphic.transform.rotation) as GameObject;
+			saying = Instantiate(sayingPrefab[1], graphic.transform.position + sayingOffset, graphic.transform.rotation) as GameObject;
 			saying.transform.SetParent(this.transform);
 		}
-		*/
-
+		
 		// voice
 		myAudio_voice.PlayOneShot(voice02);
-
 		
-		graphic.material.DOFade(0f, emergeDuration).SetDelay(wait);
-		face.material.DOFade(0f, emergeDuration).SetDelay(wait);
+		float waitTmp = wait * 2;
 		
-		this.transform.DOMove(defaultPos + emergePosOffset, emergeDuration).SetDelay(wait * 2).OnComplete(delegate{
-			gameManager.DisplayResult(false);
+		graphic.material.DOFade(0f, emergeDuration).SetDelay(waitTmp);
+		face.material.DOFade(0f, emergeDuration).SetDelay(waitTmp);
+		
+		this.transform.DOMove(defaultPos + emergePosOffset, emergeDuration).SetDelay(waitTmp).OnComplete(delegate{
+			gameManager.DisplayResult(false, 1f);
+			Destroy(saying.gameObject);
 		});
 	}
 }
