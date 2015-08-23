@@ -89,6 +89,8 @@ public class Boss : MonoBehaviour {
 	[SerializeField]
 	private GameObject[] effect;
 	
+	private float effectTimer = 0f;
+	
 	// about escaping
 	private bool startFadeOut;
 	
@@ -164,9 +166,13 @@ public class Boss : MonoBehaviour {
 		}
 		
 		if( (curhealth <= MaxHealth / 2) && (curState == BossState.Attacking || curState == BossState.Dying) ){
-			int max = curState == BossState.Attacking ? 40 : 15;
-			if(Random.Range(0, max) == 0){
-				MakeEffect();
+			effectTimer += Time.deltaTime;
+			if(effectTimer >= 0.25f){
+				effectTimer = 0f;
+			
+				if(curState == BossState.Dying || (curState == BossState.Attacking && Random.Range(0, 2)==0)){
+					MakeEffect();
+				}
 			}
 		}
 
@@ -297,7 +303,6 @@ public class Boss : MonoBehaviour {
 	}
 
 	private void MakeEffect(int num=1){
-		Debug.Log("MakeEffect");
 		for(int i = 0 ; i < num ; i++){
 			Vector3 offset = new Vector3(Random.Range(-3f, 3f), Random.Range(-3f, 3f), -1f); 
 			Instantiate(effect[0], graphic.transform.position + offset, Quaternion.identity);
