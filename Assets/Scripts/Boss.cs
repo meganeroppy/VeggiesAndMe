@@ -297,6 +297,7 @@ public class Boss : MonoBehaviour {
 	}
 
 	private void MakeEffect(int num=1){
+		Debug.Log("MakeEffect");
 		for(int i = 0 ; i < num ; i++){
 			Vector3 offset = new Vector3(Random.Range(-3f, 3f), Random.Range(-3f, 3f), -1f); 
 			Instantiate(effect[0], graphic.transform.position + offset, Quaternion.identity);
