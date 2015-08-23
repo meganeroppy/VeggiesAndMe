@@ -91,14 +91,14 @@ public class FlyingObject : MonoBehaviour {
 			Instantiate(effect_die[seed], transform.position + offset, transform.rotation);
 		}
 		
-		/*
+		
 		if(withEffect){
 			// score pop
 			ScorePop obj = Instantiate(scorePop).GetComponent<ScorePop>();
 			obj.transform.position = transform.position;
 			obj.SetText("100");		
 		}
-		*/
+		
 		
 		graphic.SetActive(false);
 		Destroy(this.gameObject, 0.5f);

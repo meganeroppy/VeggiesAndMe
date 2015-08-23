@@ -131,7 +131,7 @@ public class GameManager : MonoBehaviour
 		scoreText.text =
 			("clear time\n" + clearTime.ToString () + " = " + (restTime * 100).ToString () + "pt\n") 
 				+ "your score\n" + totalScore + "pt";
-		scoreText.transform.DOMove (new Vector3 (0f, 0f, 20f), 5f).OnComplete (delegate {
+		scoreText.transform.DOMove (new Vector3 (0f, 0f, 20f), 2.5f).OnComplete (delegate {
 			readyToRestart = true;
 		});
 	}
@@ -145,7 +145,7 @@ public class GameManager : MonoBehaviour
 		scoreText = Instantiate (scoreTextPrefab).GetComponent<Score> ();
 		scoreText.transform.position = this.transform.position = offset;
 		scoreText.text = "your score\n" + totalScore + "pt";
-		scoreText.transform.DOMove (new Vector3 (0f, 0f, 20f), 5f).OnComplete (delegate {
+		scoreText.transform.DOMove (new Vector3 (0f, 0f, 20f), 2.5f).OnComplete (delegate {
 			readyToRestart = true;
 		});
 	}

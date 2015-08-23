@@ -1,5 +1,6 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using DG.Tweening;
 
 public class ScorePop : MonoBehaviour {
@@ -9,11 +10,20 @@ public class ScorePop : MonoBehaviour {
 	[SerializeField]
 	private float endOffset = 5f;
 	
+	private Dictionary<int, Color> colors = new Dictionary<int, Color>(){
+		{0, Color.yellow},
+		{1, Color.white},
+		{2, Color.green},
+		{3, Color.magenta},
+		{4, Color.cyan},
+	};
+	
 	private TextMesh text;
 	
 	private void Awake(){
 		text = GetComponent<TextMesh>();
 		timer = defLifeTime;
+		text.color = ChooseColor();
 	}
 
 	public void SetText(string str, float duration=1f){
@@ -32,5 +42,10 @@ public class ScorePop : MonoBehaviour {
 		if(timer <= 0 ){
 		Destroy(this.gameObject);
 		}
+	}
+	
+	private Color ChooseColor(){
+		int seed = Random.Range(0, colors.Count);
+		return colors[seed];
 	}
 }
